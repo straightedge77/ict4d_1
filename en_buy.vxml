@@ -22,7 +22,7 @@
 <menu id="menu_product" scope="dialog">
 <prompt>
 <break time="1000"/>
-Please select the type of the seeds
+Please select the type of the seeds you want to buy.
 </prompt>
 
 
@@ -53,34 +53,6 @@ For <value expr="_prompt"/>, Press <value expr="_dtmf"/>
       </filled>
 
       </field>
- 
-      <field name="form_price" type="number"> 
-         <prompt>
-	How much do you want to sell your <value expr="weight"/> <value expr="units"/> of <value expr="seed"/>?
-	Enter the price and press hash
-     </prompt>
-     <filled>
-	<assign name="price" expr="form_price"/>
-      </filled>
-      </field>
-
-      <record name="seller" beep="true" maxtime="10s" finalsilence="4000ms" dtmfterm="true" type="audio/x-wav">
-	<prompt timeout="5s">
-	  Record your name after the beep.
-	</prompt>
-	<noinput>
-	  I didn't hear anything, please try again.
-	</noinput>
-      </record>
-
-      <record name="address" beep="true" maxtime="10s" finalsilence="4000ms" dtmfterm="true" type="audio/x-wav">
-	<prompt timeout="5s">
-	  Record your address after the beep.
-	</prompt>
-	<noinput>
-	  I didn't hear anything, please try again.
-	</noinput>
-      </record>
 
       <record name="reference" beep="true" maxtime="10s" finalsilence="4000ms" dtmfterm="true" type="audio/x-wav">
 	<prompt timeout="5s">
@@ -101,7 +73,7 @@ For <value expr="_prompt"/>, Press <value expr="_dtmf"/>
 <!-- confirmation form-->
 <menu id="confirm" scope="dialog" dtmf="true">
      <prompt>
-       You have created an add for <value expr="weight"/> <value expr="units"/> of <value expr="seed"/> for <value expr="price"/>.
+       You are searching <value expr="weight"/> <value expr="units"/> of <value expr="seed"/>.
        <break time="1000"/>
 To Confirm, Press 1
 <break time="1000"/>
@@ -116,13 +88,16 @@ To Re-enter your offering, Press 2
 <!-- finish form-->
 <menu id="last" scope="dialog" dtmf="true">
 <prompt>
-Your Add has been posted online
-<break time="1000"/>
-To Enter another add, Press 1
-<break time="1000"/>
-To Finish, Press 2
+Here is a list of offers.
+<break time="500"/>
+Next offer, Press 1
+<break time="500"/>
+Previous offer, Press 2
+<break time="500"/>
+Select the offer and finish, Press 3
 </prompt>
-<choice next="#menu_product"></choice>
+<choice next="#last"></choice>
+<choice next="#last"></choice>
 <choice event="end"></choice>
 </menu>
 

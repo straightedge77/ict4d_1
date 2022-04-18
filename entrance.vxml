@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vxml version = "2.1" application="http://webhosting.voxeo.net/208150/www/root.vxml">
+
+<property name="inputmodes" value="dtmf"/> <!-- set input to DTMF-->
+
+<catch event="lang_selected"> 
+      <assign name="lang" expr="_message"/>
+      <prompt>
+            You chose <value expr="lang"/>.
+      </prompt>
+      <if cond="lang == 'French'">
+	<goto next="#switch_fr"/>
+	<else />
+	<goto next="#switch_service"/>
+      </if>
+</catch>
+<!-- main menu-->
+<menu id="switch_lang" scope="dialog">
+
+<!-- product list-->
+<prompt>
+<enumerate>
+<break time="750"/>
+For <value expr="_prompt"/>, Press <value expr="_dtmf"/>
+</enumerate>
+</prompt>
+
+<!-- comment -->
+<choice event="lang_selected" dtmf="1" message="'English'">English</choice>
+<choice event="lang_selected" dtmf="2" message="'French'">French</choice>
+<choice event="lang_selected" dtmf="3" message="'Bomu'">Bomu</choice>
+
+</menu>
+
+
+<menu id="switch_service" scope="dialog">
+      <!-- product list-->
+      <prompt>
+      <enumerate>
+      <break time="750"/>
+      To <value expr="_prompt"/>, Press <value expr="_dtmf"/>
+      </enumerate>
+      </prompt>
+      
+      <!-- comment -->
+      <choice next="./en_buy.vxml" dtmf="1"> Buy seeds</choice>
+      <choice next="./en_sell.vxml" dtmf="2"> Sell seeds</choice>
+      <choice next="./en_exchange.vxml" dtmf="3"> Exchange seeds</choice>
+      <choice next="./en_report.vxml" dtmf="4"> Report production</choice>
+      <choice next="./en_recommend.vxml" dtmf="5"> Recommend seeding plan</choice>
+      
+</menu>
+
+<menu id="switch_fr" scope="dialog" dtmf="true">
+  <prompt>
+  <audio src="./service_fr.wav">
+    <break time="1000"/>
+  </audio>
+  </prompt>
+  <choice next="./en_buy.vxml"></choice>
+  <choice next="./en_sell.vxml"></choice>
+  <choice next="./en_exchange.vxml"></choice>
+  <choice next="./en_report.vxml"></choice>
+  <choice next="./en_recommend.vxml"></choice>
+</menu>
+
+</vxml>

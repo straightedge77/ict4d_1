@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vxml version = "2.1" application="http://webhosting.voxeo.net/208150/www/root.vxml">
+
+<property name="inputmodes" value="dtmf"/> <!-- set input to DTMF-->
+
+<!-- event for product selection-->
+<catch event="bag_product_selected"> 
+<prompt>
+.
+</prompt>
+<assign name="seed" expr="_message"/>
+<assign name="units" expr="'kilograms'"/>
+<goto next="#menu_product_hold"/>
+</catch>
+
+
+<catch event="bag_product_selected_hold"> 
+      <prompt>
+      .
+      </prompt>
+      <assign name="seed_hold" expr="_message"/>
+      <assign name="units_hold" expr="'kilograms'"/>
+      <goto next="#details"/>
+</catch>
+
+<!-- end event-->
+<catch event="end"> 
+ <disconnect/> 
+</catch>
+
+<!-- main menu-->
+<menu id="menu_product" scope="dialog">
+<prompt>
+<break time="1000"/>
+Please select the type of the seeds you want to exchange for.
+</prompt>
+
+
+<!-- product list-->
+<prompt>
+<enumerate>
+<break time="1000"/>
+For <value expr="_prompt"/>, Press <value expr="_dtmf"/>
+</enumerate>
+</prompt>
+
+<!-- comment -->
+<choice event="bag_product_selected" dtmf="1" message="Sorgho">Sorgho</choice>
+<choice event="bag_product_selected" dtmf="2" message="Millet">Millet</choice>
+<choice event="bag_product_selected" dtmf="3" message="petit mil">petit mil</choice>
+
+</menu>
+
+<menu id="menu_product_hold" scope="dialog">
+      <prompt>
+      <break time="1000"/>
+      Please select the type of the seeds you holds.
+      </prompt>
+      
+      <!-- product list-->
+      <prompt>
+      <enumerate>
+      <break time="1000"/>
+      For <value expr="_prompt"/>, Press <value expr="_dtmf"/>
+      </enumerate>
+      </prompt>
+      
+      <!-- comment -->
+      <choice event="bag_product_selected_hold" dtmf="1" message="Sorgho">Sorgho</choice>
+      <choice event="bag_product_selected_hold" dtmf="2" message="Millet">Millet</choice>
+      <choice event="bag_product_selected_hold" dtmf="3" message="petit mil">petit mil</choice>
+      
+</menu>
+
+<!-- main form-->
+<form id="details">
+      <record name="reference" beep="true" maxtime="10s" finalsilence="4000ms" dtmfterm="true" type="audio/x-wav">
+	<prompt timeout="5s">
+	  Record your reference after the beep.
+	</prompt>
+	<noinput>
+	  I didn't hear anything, please try again.
+	</noinput>
+      </record>
+	
+<!-- "filled" event for form -->
+      <filled>
+            <goto next="#confirm"/>
+      </filled>
+
+   </form>
+
+<!-- confirmation form-->
+<menu id="confirm" scope="dialog" dtmf="true">
+     <prompt>
+       You are searching <value expr="seed"/> and you have <value expr="seed_hold"/>.
+       <break time="1000"/>
+To Confirm, Press 1
+<break time="1000"/>
+To Re-enter your offering, Press 2
+</prompt>
+
+<!-- listed choices are enumerated in order, 1 for save, 2 for menu_product-->
+<choice next="#last"></choice> <!--go to "save" form--> 
+<choice next="#menu_product"></choice> <!--back to main form--> 
+</menu>
+
+<!-- finish form-->
+<menu id="last" scope="dialog" dtmf="true">
+<prompt>
+Here is a list of offers.
+<break time="500"/>
+Next offer, Press 1
+<break time="500"/>
+Previous offer, Press 2
+<break time="500"/>
+Select the offer and finish, Press 3
+<break time="500"/>
+No offer and you want to post your exchange online, Press 4.
+
+</prompt>
+<choice next="#last"></choice>
+<choice next="#last"></choice>
+<choice event="end"></choice>
+<choice event="end"></choice>
+</menu>
+
+</vxml>
