@@ -1,4 +1,4 @@
-# ICT4D_assignment1 - VXML prototype
+# ICT4D_assignment - VXML prototype
 
 ## Code Introduction
 - entrance.vxml is the selecting page for language and service
