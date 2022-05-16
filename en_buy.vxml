@@ -85,20 +85,101 @@ To Re-enter your offering, Press 2
 <choice next="#menu_product"></choice> <!--back to main form--> 
 </menu>
 
+
+<form id="last" scope="dialog" dtmf="true">
+      <block>
+            <prompt>
+                  Here is a list of offers.
+                  <break time="500"/>
+                  Next offer, Press 1
+                  <break time="500"/>
+                  Previous offer, Press 2
+                  <break time="500"/>
+                  Select the offer and finish, Press 3
+                  <break time="500"/>
+            </prompt>
+            <goto next="#get_data"/>         
+      </block>
+</form>
+
+
+
+<var name="start_id" expr="0"/>
+<var name="data" expr="1"/> 
+<var name="recv_price"/> 
+<var name="recv_id"/> 
+<var name="recv_address"/> 
+<var name="recv_reference"/> 
+
+
+
+<form id="inc_id">
+      <block>
+          <assign name="start_id" expr="start_id+1"/>
+          <goto next="#get_data"/>         
+      </block>
+</form>
+
+<form id="dec_id">
+      <block>
+            <assign name="start_id" expr="start_id-1"/>
+            <goto next="#get_data"/>         
+      </block>
+</form>
+
+
+<form id="get_data">
+      <block>
+            <var name="type" expr="'buy'"/>     
+                  <data name="quote" src="http://47.100.193.194/ict.php" namelist="type seed weight start_id data"/> 
+            <script><![CDATA[
+                  recv_id = quote.documentElement.getElementsByTagNameNS("", "id").item(0).firstChild.data;
+            ]]></script>
+
+            <if cond="recv_id == -1">
+                  <assign name="start_id" expr="-1"/>
+                  <goto next="#inc_id"/>
+            <else/> <if cond="recv_id == -2">
+                        <goto next="#noresult"/>
+                  <else/>
+                        <script><![CDATA[
+                              recv_price = quote.documentElement.getElementsByTagNameNS("", "price").item(0).firstChild.data;
+                              recv_id = quote.documentElement.getElementsByTagNameNS("", "id").item(0).firstChild.data;
+                              recv_address = quote.documentElement.getElementsByTagNameNS("", "address").item(0).firstChild.data;
+                              recv_reference = quote.documentElement.getElementsByTagNameNS("", "reference").item(0).firstChild.data;
+                        ]]></script>      
+                        <goto next="#select_offer"/>
+                  </if>
+            </if>
+      </block>
+</form>
+
 <!-- finish form-->
-<menu id="last" scope="dialog" dtmf="true">
-<prompt>
-Here is a list of offers.
-<break time="500"/>
-Next offer, Press 1
-<break time="500"/>
-Previous offer, Press 2
-<break time="500"/>
-Select the offer and finish, Press 3
-</prompt>
-<choice next="#last"></choice>
-<choice next="#last"></choice>
+<menu id="select_offer" scope="dialog" dtmf="true">
+      <prompt>
+            This offer sells <value expr="seed"/> for <value expr="recv_price"/>.
+            <break time="500"/>
+            Reference <break time="500"/> 
+            <audio expr="recv_reference"/> <break time="500"/> 
+
+            Address <break time="500"/> 
+            <audio expr="recv_address"/> <break time="500"/> 
+      </prompt>
+<choice next="#inc_id"></choice>
+<choice next="#dec_id"></choice>
 <choice event="end"></choice>
 </menu>
+
+
+
+<form id="noresult">
+      <block>
+            <prompt>
+                  your search does not match any offers.
+            </prompt>
+            <disconnect/> 
+      </block>
+</form>
+
 
 </vxml>
