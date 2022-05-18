@@ -90,10 +90,11 @@ For <value expr="_prompt"/>, Press <value expr="_dtmf"/>
 	  I didn't hear anything, please try again.
 	</noinput>
       </record>
-	
-<!-- "filled" event for form -->
+
       <filled>
-  <goto next="#confirm"/>
+        <assign  name="application.address" expr="address"/> <!-- assign record to global variables-->
+        <assign  name="application.reference" expr="reference"/>
+        <goto next="#confirm"/>
       </filled>
 
    </form>
@@ -109,9 +110,17 @@ To Re-enter your offering, Press 2
 </prompt>
 
 <!-- listed choices are enumerated in order, 1 for save, 2 for menu_product-->
-<choice next="#last"></choice> <!--go to "save" form--> 
+<choice next="#submit_form"></choice> <!--go to "save" form--> 
 <choice next="#menu_product"></choice> <!--back to main form--> 
 </menu>
+
+<form id="submit_form">
+  <block>
+    <var  name="type" expr="'sell'"/>
+  <submit enctype="multipart/form-data" next="http://47.100.193.194/ict.php" namelist="type seed weight price address reference" method="post"/>
+  <goto next="#last"/> <!-- not reached, last code on php server -->
+  </block>
+</form>
 
 <!-- finish form-->
 <menu id="last" scope="dialog" dtmf="true">
